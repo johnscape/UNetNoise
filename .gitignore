@@ -1,7 +1,9 @@
 config.py
 objectdb
+tests.py
 .vscode/
 masks/
 noise/
 gen/
 __pycache__/
+seperate/

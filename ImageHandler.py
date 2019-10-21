@@ -123,3 +123,41 @@ class ImageGenerator:
                 print("Image " + image + " is larger than desired: " + width + ", " + height)
                 allGood = False
         return allGood
+
+
+class ImageSeperator:
+
+    def __init__(self, target_size = 512, step_size = 10):
+        self.__TargetSize = target_size
+        self.__StepSize = step_size
+
+    def Seperate(self, imagePath, savePath):
+        if savePath[-1] != '/':
+            savePath += '/'
+        original = Image.open(imagePath)
+        current_X = 0
+        current_Y = 0
+        counter = 1
+        while True:
+            if current_X + self.__TargetSize < original.size[0] and current_Y + self.__TargetSize < original.size[1]:
+                part = original.crop((current_X, current_Y, current_X + self.__TargetSize, current_Y + self.__TargetSize))
+                part.save(savePath + str(counter).zfill(4) + ".png", format="png")
+            else:
+                newimg = Image.new(mode='RGB', size=(self.__TargetSize, self.__TargetSize))
+                part = None
+                if current_X + self.__TargetSize >= original.size[0] and not (current_Y + self.__TargetSize >= original.size[1]):
+                    part = original.crop((current_X, current_Y, original.size[0], current_Y + self.__TargetSize))
+                elif not (current_X + self.__TargetSize >= original.size[0]) and current_Y + self.__TargetSize >= original.size[1]:
+                    part = original.crop((current_X, current_Y, current_X + self.__TargetSize, original.size[1]))
+                else:
+                    part = original.crop((current_X, current_Y, original.size[0], original.size[1]))
+                newimg.paste(part, (0, 0, part.size[0], part.size[1]))
+                newimg.save(savePath + str(counter).zfill(4) + ".png", format="png")
+            current_X += self.__StepSize
+            if current_X >= original.size[0]:
+                current_Y += self.__StepSize
+                current_X = 0
+                if current_Y >= original.size[1]:
+                    break
+            counter += 1
+        print("Finished")
