@@ -5,7 +5,6 @@ from keras.optimizers import Adam
 def CreateUnetStep(input_layer, size, useDropout = False):
     conv = Conv2D(size, 3, activation='relu', padding = 'same', kernel_initializer = 'he_normal')(input_layer)
     conv = Conv2D(size, 3, activation='relu', padding = 'same', kernel_initializer = 'he_normal')(conv)
-    drop = None
     if useDropout:
         conv = Dropout(0.5)(conv)
     return conv
