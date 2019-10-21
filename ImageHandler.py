@@ -51,12 +51,12 @@ class ImageGenerator:
         final_images = []
         original_images = []
         for _ in range(num):
-            selected_image = Image.open(self.__MasksPath + "/" + random.choice(masks))
+            selected_image = Image.open(self.__MasksPath + "/" + random.choice(masks)).convert('RGB')
             noise_count = random.randint(1, max_noise_count)
             base_array = np.array(selected_image)
             original_images.append(selected_image)
             for _ in range(noise_count):
-                selected_noise = Image.open(self.__NoisePath + "/" + random.choice(noises))
+                selected_noise = Image.open(self.__NoisePath + "/" + random.choice(noises)).convert('RGB')
                 if self.RotationEnabled:
                     selected_image = selected_image.rotate(random.randint(0, 359))
                     selected_noise = selected_noise.rotate(random.randint(0, 359))

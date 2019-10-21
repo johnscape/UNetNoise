@@ -39,4 +39,6 @@ def CreateUnet(input_size, color_channels = 3):
 
     model = Model(input=input, output=final_conv)
     model.compile(optimizer=Adam(learning_rate=1e-4), loss='binary_crossentropy', metrics = ['accuracy'])
-    model.summary()
+    #model.summary()
+
+    return model
