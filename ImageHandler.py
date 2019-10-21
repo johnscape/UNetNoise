@@ -19,7 +19,7 @@ class ImageGenerator:
         self.DeleteWithoutAsking = False
         self.SkipImageCheck = True
 
-    def GenerateImages(self, num = 5000, max_noise_count = 10):
+    def GenerateImages(self, num = 5000, max_noise_count = 10, auto_save = True):
         #check folders
         if os.path.exists(self.__GeneratedPath + "/generated") or os.path.exists(self.__GeneratedPath + "/original"):
             if not self.DeleteWithoutAsking:
@@ -49,12 +49,14 @@ class ImageGenerator:
                 return
         #generate images
         final_images = []
+        original_images = []
         for _ in range(num):
-            selected_image = Image.open(random.choice(masks))
-            noise_count = random.randint(0, max_noise_count)
+            selected_image = Image.open(self.__MasksPath + "/" + random.choice(masks))
+            noise_count = random.randint(1, max_noise_count)
             base_array = np.array(selected_image)
+            original_images.append(selected_image)
             for _ in range(noise_count):
-                selected_noise = Image.open(random.choice(noises))
+                selected_noise = Image.open(self.__NoisePath + "/" + random.choice(noises))
                 if self.RotationEnabled:
                     selected_image = selected_image.rotate(random.randint(0, 359))
                     selected_noise = selected_noise.rotate(random.randint(0, 359))
@@ -94,6 +96,10 @@ class ImageGenerator:
             final_img = Image.fromarray(base_array.astype('uint8'), 'RGB')
             final_images.append(final_img)
 
+        for img in range(len(final_images)):
+            file_name = str((img + 1)).zfill(3)
+            final_images[img].save(self.__GeneratedPath + "/generated/" + file_name + ".png", format="png")
+            original_images[img].save(self.__GeneratedPath + "/original/" + file_name + ".png", format="png")
         return final_images
 
     def DeleteFiles(self, path):
