@@ -50,11 +50,14 @@ class ImageGenerator:
         #generate images
         final_images = []
         original_images = []
+        img = 0
         for _ in range(num):
+            img += 1
             selected_image = Image.open(self.__MasksPath + "/" + random.choice(masks)).convert('RGB')
             noise_count = random.randint(1, max_noise_count)
             base_array = np.array(selected_image)
-            original_images.append(selected_image)
+            if not auto_save:
+                original_images.append(selected_image)
             for _ in range(noise_count):
                 selected_noise = Image.open(self.__NoisePath + "/" + random.choice(noises)).convert('RGB')
                 if self.RotationEnabled:
@@ -92,14 +95,16 @@ class ImageGenerator:
                             #if black or we can overwrite, start the procedure
                             for rgb in range(3):
                                 base_array[startX + x][startY + y][rgb] = noise_array[x][y][rgb]
-                
+            
             final_img = Image.fromarray(base_array.astype('uint8'), 'RGB')
-            final_images.append(final_img)
-
-        for img in range(len(final_images)):
-            file_name = str((img + 1)).zfill(3)
-            final_images[img].save(self.__GeneratedPath + "/generated/" + file_name + ".png", format="png")
-            original_images[img].save(self.__GeneratedPath + "/original/" + file_name + ".png", format="png")
+            if auto_save:
+                file_name = str((img + 1)).zfill(4)
+                final_img.save(self.__GeneratedPath + "/generated/" + file_name + ".png", format="png")
+                selected_image.save(self.__GeneratedPath + "/original/" + file_name + ".png", format="png")
+            else:
+                final_images.append(final_img)
+            print("Generated image " + str(img))
+            
         return final_images
 
     def DeleteFiles(self, path):

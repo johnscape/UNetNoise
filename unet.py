@@ -38,7 +38,7 @@ def CreateUnet(input_size, color_channels = 3):
     final_conv = Conv2D(1, 1, activation='sigmoid')(final_conv)
 
     model = Model(input=input, output=final_conv)
-    model.compile(optimizer=Adam(learning_rate=1e-4), loss='binary_crossentropy', metrics = ['accuracy'])
+    model.compile(optimizer=Adam(lr=1e-4), loss='binary_crossentropy', metrics = ['accuracy'])
     #model.summary()
 
     return model

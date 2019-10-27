@@ -17,12 +17,14 @@ def WhiteWash(imageObject):
 
 #generate images
 #generator = ImageGenerator("masks", "noise", "gen")
-#generator.GenerateImages(500, 20)
+#generator.GenerateImages(2000, 20)
 
 training_set = []
 mask_set = []
-for i in range(30):
-    file_name = str(i + 1).zfill(3) + ".png"
+for i in range(100):
+    if i == 0:
+        continue
+    file_name = str(i + 1).zfill(4) + ".png"
     img = Image.open("gen/generated/" + file_name).convert('RGB')
     orig = ConvertImage(img)
     training_set.append(orig.reshape((1, 512, 512, 3)))
@@ -44,4 +46,4 @@ filepath="weights.best.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 callbacks_list = [checkpoint]
 
-model.fit(training, masks, validation_split=0.3, batch_size=3, epochs=3, verbose=1, callbacks=callbacks_list)
+model.fit(training, masks, validation_split=0.3, batch_size=8, epochs=10, verbose=1, callbacks=callbacks_list)
